@@ -1,6 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:master_neo/api_calls.dart';
+import 'package:master_neo/list_item.dart';
 import 'package:master_neo/model/neo.dart';
 
 Future main() async {
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
             retour = ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: ((context, index) {
-                return Text(snapshot.data!.elementAt(index).name);
+                return ListItem(object: snapshot.data!.elementAt(index));
               }),
             );
           } else if (snapshot.hasError) {
