@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:master_neo/api_calls.dart';
 import 'package:master_neo/model/neo.dart';
 
@@ -59,7 +56,6 @@ class _HomePageState extends State<HomePage> {
             retour = ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: ((context, index) {
-                print(snapshot.data!.elementAt(index));
                 return Text(snapshot.data!.elementAt(index).name);
               }),
             );
