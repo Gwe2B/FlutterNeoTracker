@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:master_neo/model/neo.dart';
 
@@ -7,7 +7,7 @@ class ApiCalls {
   static const API_FETCH_ALL_URL =
       'https://api.nasa.gov/neo/rest/v1/neo/browse';
 
-  static const API_KEY = 'sUmPMbD5rpay1qvimgu7KfWpw1cTuZsSYdsSuarN';
+  static final API_KEY = dotenv.env['API_KEY'];
 
   static Future<List<NEO>> fetchAll() async {
     List<NEO> result = List.empty(growable: true);
