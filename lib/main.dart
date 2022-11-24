@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:master_neo/api_calls.dart';
+import 'package:master_neo/model/neo.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,13 +34,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<List<NEO>> futureNeo;
+
+  @override
+  void initState() {
+    super.initState();
+    futureNeo = ApiCalls.fetchAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container()
+      body: FutureBuilder<List<NEO>>(
+        future: futureNeo,
+        builder: (context, snapshot) {
+          Widget retour = const CircularProgressIndicator();
+
+          if (snapshot.hasData) {
+            retour = ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: ((context, index) {
+                print(snapshot.data!.elementAt(index));
+                return Text(snapshot.data!.elementAt(index).name);
+              }),
+            );
+          } else if (snapshot.hasError) {
+            retour = Text('${snapshot.error}');
+          }
+          return retour;
+        },
+      ),
     );
   }
 }
