@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:master_neo/detailed_view.dart';
 import 'package:master_neo/model/neo.dart';
 
 class ListItem extends StatelessWidget {
@@ -50,7 +51,9 @@ class ListItem extends StatelessWidget {
             ],
           ),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(_createRoute(object));
+              },
               icon: const Icon(
                 Icons.arrow_forward_ios_rounded,
                 color: Colors.blue,
@@ -59,4 +62,22 @@ class ListItem extends StatelessWidget {
       ),
     ));
   }
+}
+
+Route _createRoute(NEO object) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => DetailedView(object: object,),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
 }
