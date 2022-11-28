@@ -28,6 +28,22 @@ class _DetailedViewState extends State<DetailedView> {
                 .roundToDouble() /
             100;
 
+    double anl =
+        (double.parse(widget.object.orbitalInfo.ascendingNodeLongitude) * 100)
+                .roundToDouble() /
+            100;
+    double eccentriciti =
+        (double.parse(widget.object.orbitalInfo.eccentricity) * 100)
+                .roundToDouble() /
+            100;
+    double inclination =
+        (double.parse(widget.object.orbitalInfo.inclination) * 100)
+                .roundToDouble() /
+            100;
+    double SMA = (double.parse(widget.object.orbitalInfo.semiMajorAxis) * 100)
+            .roundToDouble() /
+        100;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Near Earth Object')),
       body: Padding(
@@ -71,12 +87,72 @@ class _DetailedViewState extends State<DetailedView> {
                   sectionClosingHapticFeedback: SectionHapticFeedback.light,
                   children: [
                     AccordionSection(
-                      leftIcon: SvgPicture.asset('assets/orbit.svg'),
+                      leftIcon: SvgPicture.asset(
+                        'assets/orbit.svg',
+                        width: 32,
+                      ),
                       header: const Text(
                         'Orbital Informations',
                         maxLines: 2,
                       ),
-                      content: const Text('Lorem Ipsum Dolor Sin Amet'),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              RichText(
+                                text: TextSpan(text: 'Firt seen: ', children: [
+                                  TextSpan(
+                                      text: widget.object.orbitalInfo
+                                          .getFormattedFirstSeenDate())
+                                ]),
+                              ),
+                              RichText(
+                                text: TextSpan(text: 'Last seen: ', children: [
+                                  TextSpan(
+                                      text: widget.object.orbitalInfo
+                                          .getFormattedLastSeenDate())
+                                ]),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Semi-major Axis: ',
+                                    children: [TextSpan(text: '$SMA (A.U.)')]),
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Eccentriciti: ',
+                                    children: [
+                                      TextSpan(text: eccentriciti.toString())
+                                    ]),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Inclination: ',
+                                    children: [
+                                      TextSpan(text: '$inclination°')
+                                    ]),
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                    text: 'ANL: ',
+                                    children: [TextSpan(text: '$anl°')]),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                       contentHorizontalPadding: 20,
                       contentBorderWidth: 1,
                     ),
@@ -90,9 +166,12 @@ class _DetailedViewState extends State<DetailedView> {
                       contentBorderWidth: 1,
                     )
                   ]),
-                  Text('Gallery', style: textTheme.bodyLarge,),
-                  // Make a GridView
-                  const Text('Grid View Incomming')
+              Text(
+                'Gallery',
+                style: textTheme.bodyLarge,
+              ),
+              // Make a GridView
+              const Text('Grid View Incomming')
             ],
           ),
         ),

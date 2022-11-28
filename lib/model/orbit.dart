@@ -27,4 +27,12 @@ class Orbit {
       required this.inclination,
       required this.ascendingNodeLongitude,
       required this.orbitalPeriod});
+
+  String getFormattedFirstSeenDate() {
+    return '${firstObservation.day}/${firstObservation.month}/${firstObservation.year}';
+  }
+
+  String getFormattedLastSeenDate() {
+    return '${lastObservation.day}/${lastObservation.month}/${lastObservation.year}';
+  }
 }
