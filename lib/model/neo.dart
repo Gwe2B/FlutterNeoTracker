@@ -5,6 +5,7 @@ import 'package:master_neo/model/orbit.dart';
 class NEO {
   final int id;
   final String name;
+  final String shortName;
   final double absoluteMagnitude;
   final NeoDiameter estimatedDiameter;
   final bool isPotentiallyHazardous;
@@ -15,6 +16,7 @@ class NEO {
   const NEO(
       {required this.id,
       required this.name,
+      required this.shortName,
       required this.absoluteMagnitude,
       required this.estimatedDiameter,
       required this.isPotentiallyHazardous,
@@ -30,6 +32,7 @@ class NEO {
     return NEO(
         id: int.parse(json['id']),
         name: json['name'],
+        shortName: json['name_limited'],
         absoluteMagnitude: json['absolute_magnitude_h'],
         estimatedDiameter: NeoDiameter(
           min: estimatedDiameter['estimated_diameter_min'],

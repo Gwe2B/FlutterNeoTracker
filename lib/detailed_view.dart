@@ -2,6 +2,7 @@ import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:master_neo/api_calls.dart';
 
 import 'model/neo.dart';
 
@@ -15,6 +16,14 @@ class DetailedView extends StatefulWidget {
 
 class _DetailedViewState extends State<DetailedView> {
   static const double viewPadding = 8.0;
+
+  late Future<List<String>> neoImagesUri;
+
+  @override
+  void initState() {
+    super.initState();
+    neoImagesUri = ApiCalls.fetchImagesUri(widget.object.shortName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +49,13 @@ class _DetailedViewState extends State<DetailedView> {
         (double.parse(widget.object.orbitalInfo.inclination) * 100)
                 .roundToDouble() /
             100;
-    double SMA = (double.parse(widget.object.orbitalInfo.semiMajorAxis) * 100)
+    double sma = (double.parse(widget.object.orbitalInfo.semiMajorAxis) * 100)
             .roundToDouble() /
         100;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Near Earth Object')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(viewPadding),
         child: SizedBox(
           width: MediaQuery.of(context).size.width - (2 * viewPadding),
@@ -123,7 +132,7 @@ class _DetailedViewState extends State<DetailedView> {
                               RichText(
                                 text: TextSpan(
                                     text: 'Semi-major Axis: ',
-                                    children: [TextSpan(text: '$SMA (A.U.)')]),
+                                    children: [TextSpan(text: '$sma (A.U.)')]),
                               ),
                               RichText(
                                 text: TextSpan(
@@ -170,8 +179,31 @@ class _DetailedViewState extends State<DetailedView> {
                 'Gallery',
                 style: textTheme.bodyLarge,
               ),
-              // Make a GridView
-              const Text('Grid View Incomming')
+              //Make a GridView
+              FutureBuilder<List<String>>(
+                  future: neoImagesUri,
+                  builder: ((context, snapshot) {
+                    Widget retour = const Center(child: CircularProgressIndicator());
+
+                    if (snapshot.hasData) {
+                      retour = GridView.builder(
+                        itemCount: snapshot.data!.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 4.0,
+                                mainAxisSpacing: 4.0),
+                        itemBuilder: ((context, index) {
+                          return Image.network(snapshot.data!.elementAt(index));
+                        }),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                      );
+                    } else if (snapshot.hasError) {
+                      retour = Text('${snapshot.error}');
+                    }
+                    return retour;
+                  }))
             ],
           ),
         ),
