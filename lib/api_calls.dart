@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:master_neo/model/neo.dart';
@@ -13,7 +14,9 @@ class ApiCalls {
 
   static Future<List<NEO>> fetchAll({int page = 0}) async {
     List<NEO> result = List.empty(growable: true);
-    final uri = Uri.parse('${API_FETCH_ALL_URL}?page=$page&api_key=${API_KEY}');
+    final uri =
+        Uri.parse('$API_FETCH_ALL_URL?page=$page&size=20&api_key=$API_KEY');
+    print(uri.toString());
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -28,6 +31,15 @@ class ApiCalls {
     } else {
       throw Exception('Failed to fetch');
     }
+  }
+
+  static Future<List<NEO>> fetchAppend(
+      Future<List<NEO>> datas, int pageToFetch) async {
+    final list = await datas;
+    final elementsToAdd = await ApiCalls.fetchAll(page: pageToFetch);
+
+    list.addAll(elementsToAdd);
+    return list;
   }
 
   static Future<List<String>> fetchImagesUri(String search) async {

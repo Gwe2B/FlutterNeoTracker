@@ -35,11 +35,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Future<List<NEO>> futureNeo;
+  late ScrollController _controller;
+  int lastFetchedPage = 0;
 
   @override
   void initState() {
+    _controller = ScrollController();
+    _controller.addListener(() {
+      if (_controller.position.maxScrollExtent == _controller.offset) {
+        lastFetchedPage++;
+        setState(() {
+          futureNeo = ApiCalls.fetchAppend(futureNeo, lastFetchedPage);
+        });
+      }
+    });
+
     super.initState();
     futureNeo = ApiCalls.fetchAll();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,9 +73,16 @@ class _HomePageState extends State<HomePage> {
 
           if (snapshot.hasData) {
             retour = ListView.builder(
-              itemCount: snapshot.data!.length,
+              controller: _controller,
+              itemCount: snapshot.data!.length + 1,
               itemBuilder: ((context, index) {
-                return ListItem(object: snapshot.data!.elementAt(index));
+                if (index < snapshot.data!.length) {
+                  return ListItem(object: snapshot.data!.elementAt(index));
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               }),
             );
           } else if (snapshot.hasError) {
