@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:master_neo/api_calls.dart';
 
+import 'approach_item.dart';
 import 'model/neo.dart';
 
 class DetailedView extends StatefulWidget {
@@ -170,22 +171,37 @@ class _DetailedViewState extends State<DetailedView> {
                         'Approach Datas',
                         maxLines: 2,
                       ),
-                      content: const Text('Lorem Ipsum Dolor Sin Amet'),
+                      content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListView.builder(
+                              scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                                itemCount: widget.object.closeApproach.length,
+                                itemBuilder: ((context, index) {
+                                  return ApproachItem(
+                                      appData: widget.object.closeApproach
+                                          .elementAt(index));
+                                })),
+                          ]),
                       contentHorizontalPadding: 20,
                       contentBorderWidth: 1,
                     )
                   ]),
-              Text(
-                'Gallery',
-                style: textTheme.bodyLarge,
+              RichText(
+                text: TextSpan(children: [
+                  const WidgetSpan(child: Icon(Icons.image_outlined)),
+                  TextSpan(text: " Gallery", style: textTheme.headlineSmall)
+                ]),
               ),
               //Make a GridView
               FutureBuilder<List<String>>(
                   future: neoImagesUri,
                   builder: ((context, snapshot) {
-                    Widget retour = const Center(child: CircularProgressIndicator());
+                    Widget retour =
+                        const Center(child: CircularProgressIndicator());
 
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       retour = GridView.builder(
                         itemCount: snapshot.data!.length,
                         gridDelegate:
@@ -199,9 +215,14 @@ class _DetailedViewState extends State<DetailedView> {
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                       );
+                    } else if (snapshot.hasData) {
+                      retour = const Center(
+                        child: Text("No images found!"),
+                      );
                     } else if (snapshot.hasError) {
-                      retour = Text('${snapshot.error}');
+                      retour = Center(child: Text('${snapshot.error}'));
                     }
+
                     return retour;
                   }))
             ],

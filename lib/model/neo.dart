@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:master_neo/model/approach_data.dart';
 import 'package:master_neo/model/neo_diameter.dart';
 import 'package:master_neo/model/orbit.dart';
@@ -9,7 +10,7 @@ class NEO {
   final double absoluteMagnitude;
   final NeoDiameter estimatedDiameter;
   final bool isPotentiallyHazardous;
-  final List<ApproachData>? closeApproach;
+  final List<ApproachData> closeApproach;
   final Orbit orbitalInfo;
   final bool isSentryObject;
 
@@ -20,7 +21,7 @@ class NEO {
       required this.absoluteMagnitude,
       required this.estimatedDiameter,
       required this.isPotentiallyHazardous,
-      this.closeApproach,
+      required this.closeApproach,
       required this.orbitalInfo,
       required this.isSentryObject});
 
@@ -28,6 +29,19 @@ class NEO {
     Map<String, dynamic> buf = json['estimated_diameter'];
     Map<String, dynamic> estimatedDiameter = buf['meters'];
     Map<String, dynamic> orbitalData = json['orbital_data'];
+    List<dynamic> appDataBuf = json['close_approach_data'];
+
+    List<ApproachData> appData = List.empty(growable: true);
+    for (var element in appDataBuf) {
+      Map<String, dynamic> velocity = element['relative_velocity'];
+      Map<String, dynamic> missDistance = element['miss_distance'];
+
+      appData.add(ApproachData(
+          date: DateTime.parse(element['close_approach_date']),
+          relativeVelocity: double.parse(velocity['kilometers_per_second']),
+          missDistance: double.parse(missDistance['astronomical']),
+          orbitingObject: element['orbiting_body']));
+    }
 
     return NEO(
         id: int.parse(json['id']),
@@ -56,6 +70,7 @@ class NEO {
           ascendingNodeLongitude: orbitalData['ascending_node_longitude'],
           orbitalPeriod: orbitalData['orbital_period'],
         ),
+        closeApproach: appData,
         isSentryObject: json['is_sentry_object']);
   }
 }

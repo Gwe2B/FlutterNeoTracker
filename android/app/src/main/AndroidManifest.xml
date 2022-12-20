@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.master_neo">
+            <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="master_neo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-            <use-permission android:name="android.permission.INTERNET" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -16,7 +16,6 @@ class ApiCalls {
     List<NEO> result = List.empty(growable: true);
     final uri =
         Uri.parse('$API_FETCH_ALL_URL?page=$page&size=20&api_key=$API_KEY');
-    print(uri.toString());
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
